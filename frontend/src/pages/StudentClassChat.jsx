@@ -190,7 +190,8 @@ import { io } from "socket.io-client"
 import API from "../services/api"
 import BookLoader from "../components/BookLoader"
 
-const socket = io("http://localhost:5000")
+const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000"
+const socket = io(BACKEND_URL)
 
 function StudentClassChat() {
 
