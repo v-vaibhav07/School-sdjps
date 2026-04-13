@@ -385,7 +385,7 @@ const { setupAutoMonthlyFeesJob } = require("./controllers/feeController")
 const app = express()
 
 app.use(cors({
-  origin: "https://school-sdjps.vercel.app",
+  origin: ["https://school-sdjps.vercel.app", "http://localhost:5173"],
   credentials: true
 }))
 app.use(express.json())
