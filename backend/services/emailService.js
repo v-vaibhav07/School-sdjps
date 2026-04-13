@@ -92,8 +92,8 @@
 
 
 
-const nodemailer = require("nodemailer");
-require("dns").setDefaultResultOrder("ipv4first")
+// const nodemailer = require("nodemailer");
+// require("dns").setDefaultResultOrder("ipv4first")
 
 // const transporter = nodemailer.createTransport({
 //   service: "gmail",
@@ -102,29 +102,49 @@ require("dns").setDefaultResultOrder("ipv4first")
 //     pass: process.env.EMAIL_PASS
 //   }
 // })
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,          // ✅ IMPORTANT CHANGE
-  secure: false,      // ❗ false for 587
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-})
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// module.exports = transporter;
+
 
 // Simple function — direct call ho sake
-const sendEmail = async (to, subject, html) => {
-  const info = await transporter.sendMail({
-    from: `"SDJPS School" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html
-  })
+// const sendEmail = async (to, subject, html) => {
+//   const info = await transporter.sendMail({
+//     from: `"SDJPS School" <${process.env.EMAIL_USER}>`,
+//     to,
+//     subject,
+//     html
+//   })
 
-  console.log("✅ Email sent to:", to)
-  console.log("✅ Message ID:", info.messageId)
-  return info
-}
+//   console.log("✅ Email sent to:", to)
+//   console.log("✅ Message ID:", info.messageId)
+//   return info
+// }
+
+
+const sendEmail = async (to, subject, htmlContent) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `SDJPS School <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html: htmlContent, 
+    });
+    console.log(` Email sent to ${to}: ${info.messageId}`);
+  } catch (error) {
+    console.error(` Failed to send email to ${to}:`, error.message);
+  }
+};
+
+// module.exports = { sendEmail };
 
 module.exports = sendEmail
