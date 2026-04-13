@@ -158,84 +158,25 @@
 
 
 
-
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
-// Create transporter with Render-friendly configuration
 const createTransporter = () => {
-  // Check if credentials exist
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error("❌ EMAIL_USER or EMAIL_PASS not configured");
     return null;
   }
 
-  // Use detailed configuration instead of just 'service: "gmail"'
   return nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 2525, // Render allows this port
-    secure: false, // false for port 2525
+    port: 465,        // ✅ Use 465 (SSL) — Render allows this
+    secure: true,     // ✅ true for port 465
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    // Add timeout settings to prevent hanging
     connectionTimeout: 10000,
     greetingTimeout: 10000,
     socketTimeout: 15000,
   });
 };
-
-const transporter = createTransporter();
-
-// Verify connection on startup
-if (transporter) {
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error("❌ Email transporter verification failed:", error.message);
-      console.error("   Please check your EMAIL_USER and EMAIL_PASS on Render");
-    } else {
-      console.log("✅ Email transporter ready to send emails");
-    }
-  });
-}
-
-const sendEmail = async (to, subject, htmlContent) => {
-  // Validate inputs
-  if (!to) {
-    console.error("❌ Cannot send email: No recipient email provided");
-    throw new Error("Email recipient missing");
-  }
-
-  if (!transporter) {
-    console.error("❌ Cannot send email: Transporter not initialized");
-    throw new Error("Email service not configured. Check EMAIL_USER and EMAIL_PASS");
-  }
-
-  console.log(`📧 Attempting to send email to: ${to}`);
-  console.log(`   Subject: ${subject}`);
-
-  try {
-    const info = await transporter.sendMail({
-      from: `"SDJPS School" <${process.env.EMAIL_USER}>`,
-      to: to,
-      subject: subject,
-      html: htmlContent,
-    });
-    
-    console.log(`✅ Email sent successfully to ${to}`);
-    console.log(`   Message ID: ${info.messageId}`);
-    return info;
-    
-  } catch (error) {
-    console.error(`❌ Failed to send email to ${to}:`);
-    console.error(`   Error: ${error.message}`);
-    console.error(`   Code: ${error.code || 'N/A'}`);
-    console.error(`   Command: ${error.command || 'N/A'}`);
-    
-    // Rethrow with more context
-    throw new Error(`Email sending failed: ${error.message}`);
-  }
-};
-
-module.exports = sendEmail;
