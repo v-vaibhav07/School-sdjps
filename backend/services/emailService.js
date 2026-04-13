@@ -156,42 +156,9 @@
 
 
 
+const { Resend } = require('resend');
 
-const nodemailer = require("nodemailer");
-require("dotenv").config();
-
-const createTransporter = () => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error("❌ EMAIL_USER or EMAIL_PASS not configured");
-    return null;
-  }
-
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-  });
-};
-
-const transporter = createTransporter();
-
-if (transporter) {
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error("❌ Email transporter verification failed:", error.message);
-    } else {
-      console.log("✅ Email transporter ready to send emails");
-    }
-  });
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (to, subject, htmlContent) => {
   if (!to) {
@@ -199,31 +166,24 @@ const sendEmail = async (to, subject, htmlContent) => {
     throw new Error("Email recipient missing");
   }
 
-  if (!transporter) {
-    console.error("❌ Cannot send email: Transporter not initialized");
-    throw new Error("Email service not configured. Check EMAIL_USER and EMAIL_PASS");
-  }
-
   console.log(`📧 Attempting to send email to: ${to}`);
   console.log(`   Subject: ${subject}`);
 
   try {
-    const info = await transporter.sendMail({
-      from: `"SDJPS School" <${process.env.EMAIL_USER}>`,
+    const data = await resend.emails.send({
+      from: 'SDJPS School <onboarding@resend.dev>',  // ✅ use this until you verify your domain
       to: to,
       subject: subject,
       html: htmlContent,
     });
 
     console.log(`✅ Email sent successfully to ${to}`);
-    console.log(`   Message ID: ${info.messageId}`);
-    return info;
+    console.log(`   Message ID: ${data.id}`);
+    return data;
 
   } catch (error) {
     console.error(`❌ Failed to send email to ${to}:`);
     console.error(`   Error: ${error.message}`);
-    console.error(`   Code: ${error.code || 'N/A'}`);
-    console.error(`   Command: ${error.command || 'N/A'}`);
     throw new Error(`Email sending failed: ${error.message}`);
   }
 };
