@@ -23,6 +23,20 @@
 
 ---
 
+## 🔑 Demo Login Credentials
+
+Use the following demo accounts to explore each role on the [live demo](https://school-sdjps.vercel.app):
+
+| Role | Email | Password |
+|------|-------|----------|
+| 👨‍💼 **Admin** | `admin2@gmail.com` | `123456` |
+| 🎓 **Student** | `abhi@gmail.com` | `123456` |
+| 👨‍🏫 **Teacher** | `daya@gmail.com` | `123456` |
+
+> ⚠️ These are demo accounts for testing purposes only. Do not use real personal data with these credentials.
+
+---
+
 ## 🖥️ Live Previews
 
 ### 👨‍💼 Admin Analytics Dashboard
