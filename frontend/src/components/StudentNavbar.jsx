@@ -6,7 +6,7 @@ function StudentNavbar({ toggleSidebar }) {
 
   const navigate = useNavigate()
 
-  // ✅ DARK MODE STATE
+  
   const [dark, setDark] = useState(false)
 
   useEffect(() => {
@@ -27,8 +27,6 @@ function StudentNavbar({ toggleSidebar }) {
     }
     setDark(!dark)
   }
-
-  // ✅ Date
   const today = new Date()
   const date = today.toLocaleDateString("en-IN", {
     weekday: "long",
